@@ -13,7 +13,7 @@ public class UserDaoTests {
         Long id = 1l;
         String name = "haeeun";
         String password = "겟1234";
-        UserDao userDao = new UserDao();
+        UserDao userDao = new JejuUserDao();
         User user = userDao.findId(id);
         assertThat(user.getId(), is(id));
         assertThat(user.getName(), is(name));
@@ -29,7 +29,37 @@ public class UserDaoTests {
         user.setName(name);
         user.setPassword(password);
 
-        UserDao userDao = new UserDao();
+        UserDao userDao = new JejuUserDao();
+        userDao.insert(user);
+        assertThat(user.getId(), greaterThan(1l));
+
+        User insertedUser = userDao.findId(user.getId());
+        assertThat(user.getName(), is(name));
+        assertThat(user.getPassword(),is(password));
+    }
+
+    @Test
+    public void getForHalla() throws SQLException, ClassNotFoundException {
+        Long id = 1l;
+        String name = "haeeun";
+        String password = "겟1234";
+        UserDao userDao = new HallaUserDao();
+        User user = userDao.findId(id);
+        assertThat(user.getId(), is(id));
+        assertThat(user.getName(), is(name));
+        assertThat(user.getPassword(), is(password));
+    }
+
+    @Test
+    public void insertForHalla() throws SQLException, ClassNotFoundException {
+        User user = new User();
+
+        String name = "haeeun";
+        String password = "insert1234";
+        user.setName(name);
+        user.setPassword(password);
+
+        UserDao userDao = new HallaUserDao();
         userDao.insert(user);
         assertThat(user.getId(), greaterThan(1l));
 
