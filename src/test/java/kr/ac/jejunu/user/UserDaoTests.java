@@ -13,8 +13,9 @@ public class UserDaoTests {
         Long id = 1l;
         String name = "haeeun";
         String password = "겟1234";
-        UserDao userDao = new JejuUserDao();
-        User user = userDao.findId(id);
+        ConnectionMaker connectionMaker = new JejuConnectionMaker();
+        UserDao userDao = new UserDao(connectionMaker);
+        User user = userDao.findById(id);
         assertThat(user.getId(), is(id));
         assertThat(user.getName(), is(name));
         assertThat(user.getPassword(), is(password));
@@ -29,11 +30,12 @@ public class UserDaoTests {
         user.setName(name);
         user.setPassword(password);
 
-        UserDao userDao = new JejuUserDao();
+        ConnectionMaker connectionMaker = new JejuConnectionMaker();
+        UserDao userDao = new UserDao(connectionMaker);
         userDao.insert(user);
         assertThat(user.getId(), greaterThan(1l));
 
-        User insertedUser = userDao.findId(user.getId());
+        User insertedUser = userDao.findById(user.getId());
         assertThat(user.getName(), is(name));
         assertThat(user.getPassword(),is(password));
     }
@@ -43,8 +45,9 @@ public class UserDaoTests {
         Long id = 1l;
         String name = "haeeun";
         String password = "겟1234";
-        UserDao userDao = new HallaUserDao();
-        User user = userDao.findId(id);
+        ConnectionMaker connectionMaker = new HallaConnectionMaker();
+        UserDao userDao = new UserDao(connectionMaker);
+        User user = userDao.findById(id);
         assertThat(user.getId(), is(id));
         assertThat(user.getName(), is(name));
         assertThat(user.getPassword(), is(password));
@@ -59,12 +62,13 @@ public class UserDaoTests {
         user.setName(name);
         user.setPassword(password);
 
-        UserDao userDao = new HallaUserDao();
+        ConnectionMaker connectionMaker = new HallaConnectionMaker();
+        UserDao userDao = new UserDao(connectionMaker);
         userDao.insert(user);
         assertThat(user.getId(), greaterThan(1l));
 
-        User insertedUser = userDao.findId(user.getId());
-        assertThat(user.getName(), is(name));
-        assertThat(user.getPassword(),is(password));
+        User insertedUser = userDao.findById(user.getId());
+        assertThat(insertedUser.getName(), is(name));
+        assertThat(insertedUser.getPassword(),is(password));
     }
 }

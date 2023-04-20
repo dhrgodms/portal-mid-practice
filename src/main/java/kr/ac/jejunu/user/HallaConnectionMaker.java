@@ -4,14 +4,14 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class JejuUserDao extends UserDao {
+public class HallaConnectionMaker implements ConnectionMaker {
     @Override
     public Connection getConnection() throws ClassNotFoundException, SQLException {
-                //mysql
+        //mysql
         //driver loading
         Class.forName("com.mysql.cj.jdbc.Driver");
         //connection
-        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost/jeju?");
-        return connection;
+        // jeju -> halla로 수정했다고 가정
+        return DriverManager.getConnection("jdbc:mysql://localhost/Jeju?","jeju", "jejupw");
     }
 }
