@@ -16,6 +16,7 @@ public class UserDao {
         PreparedStatement preparedStatement=null;
         ResultSet resultSet = null;
         User user = null;
+        // 여기에서 예외처리 해줌~
         try {
             connection = dataSource.getConnection();
 
@@ -34,6 +35,7 @@ public class UserDao {
             }
         } finally {
             //자원해지
+            //이거 exception 안뜰수도 있으니까 대충 외워 별거없음(이라는 마음으로)
             try{
                 resultSet.close();
             }catch(SQLException e){
