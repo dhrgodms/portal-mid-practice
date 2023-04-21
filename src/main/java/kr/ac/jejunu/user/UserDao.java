@@ -1,34 +1,55 @@
 package kr.ac.jejunu.user;
 
+import javax.sql.DataSource;
 import java.sql.*;
 
 public class UserDao {
-    private final ConnectionMaker connectionMaker;
+    private final DataSource dataSource;
 
-    public UserDao(ConnectionMaker connectionMaker){
-        this.connectionMaker = connectionMaker;
+    public UserDao(DataSource dataSource){
+        this.dataSource = dataSource;
     }
 
     public User findById(Long id) throws ClassNotFoundException, SQLException {
-        Connection connection = connectionMaker.getConnection();
 
-        //query
-        PreparedStatement preparedStatement = connection.prepareStatement("select id, name, password from userinfo where id = ?");
-        preparedStatement.setLong(1, id);
+        Connection connection=null;
+        PreparedStatement preparedStatement=null;
+        ResultSet resultSet = null;
+        User user = null;
+        try {
+            connection = dataSource.getConnection();
 
-        //실행
-        ResultSet resultSet = preparedStatement.executeQuery();
-        resultSet.next();
-        //결과매핑
-        User user = new User();
-        user.setId(resultSet.getLong("id"));
-        user.setPassword(resultSet.getString("password"));
-        user.setName(resultSet.getString("name"));
+            //query
+            preparedStatement = connection.prepareStatement("select id, name, password from userinfo where id = ?");
+            preparedStatement.setLong(1, id);
 
-        //자원해지
-        resultSet.close();
-        preparedStatement.close();
-        connection.close();
+            //실행
+            resultSet = preparedStatement.executeQuery();
+            //결과매핑
+            if(resultSet.next()) {
+                user = new User();
+                user.setId(resultSet.getLong("id"));
+                user.setPassword(resultSet.getString("password"));
+                user.setName(resultSet.getString("name"));
+            }
+        } finally {
+            //자원해지
+            try{
+                resultSet.close();
+            }catch(SQLException e){
+                e.printStackTrace();
+            }
+            try {
+                preparedStatement.close();
+            }catch(SQLException e){
+                e.printStackTrace();
+            }
+            try {
+                connection.close();
+            }catch(SQLException e){
+                e.printStackTrace();
+            }
+        }
         //결과리턴
         return user;
     }
@@ -37,19 +58,36 @@ public class UserDao {
 
 
     public void insert(User user) throws SQLException, ClassNotFoundException {
-        Connection connection = connectionMaker.getConnection();
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = dataSource.getConnection();
 
-        PreparedStatement preparedStatement = connection.prepareStatement("insert into userinfo (name, password) values (?,?)", Statement.RETURN_GENERATED_KEYS);
-        preparedStatement.setString(1,user.getName());
-        preparedStatement.setString(2,user.getPassword());
-        preparedStatement.executeUpdate();
+            preparedStatement = connection.prepareStatement("insert into userinfo (name, password) values (?,?)", Statement.RETURN_GENERATED_KEYS);
+            preparedStatement.setString(1,user.getName());
+            preparedStatement.setString(2,user.getPassword());
+            preparedStatement.executeUpdate();
 
-        ResultSet resultSet = preparedStatement.getGeneratedKeys();
-        resultSet.next();
-        user.setId(resultSet.getLong(1));
-
-        resultSet.close();
-        preparedStatement.close();
-        connection.close();
+            resultSet = preparedStatement.getGeneratedKeys();
+            resultSet.next();
+            user.setId(resultSet.getLong(1));
+        } finally {
+            try {
+                resultSet.close();
+            }catch(SQLException e){
+                e.printStackTrace();
+            }
+            try {
+                preparedStatement.close();
+            }catch(SQLException e){
+                e.printStackTrace();
+            }
+            try {
+                connection.close();
+            }catch(SQLException e){
+                e.printStackTrace();
+            }
+        }
     }
 }

@@ -23,8 +23,7 @@ public class UserDaoTests {
         Long id = 1l;
         String name = "haeeun";
         String password = "insert1234";
-        DaoFactory daoFactory = new DaoFactory();
-        UserDao userDao = daoFactory.getUserDao();
+
         User user = userDao.findById(id);
         assertThat(user.getId(), is(id));
         assertThat(user.getName(), is(name));
@@ -40,8 +39,6 @@ public class UserDaoTests {
         user.setName(name);
         user.setPassword(password);
 
-        DaoFactory daoFactory = new DaoFactory();
-        UserDao userDao = daoFactory.getUserDao();
         userDao.insert(user);
 
         User insertedUser = userDao.findById(user.getId());
