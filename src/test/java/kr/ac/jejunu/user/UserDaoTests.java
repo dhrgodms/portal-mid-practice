@@ -49,14 +49,7 @@ public class UserDaoTests {
 
     @Test
     public void update() throws SQLException, ClassNotFoundException {
-        User user = new User();
-
-        String name = "haeeun";
-        String password = "insert1234";
-        user.setName(name);
-        user.setPassword(password);
-
-        userDao.insert(user);
+        User user = insertedUser();
 
         String updatedName = "updateHaeeun";
         String updatedPassword = "updated1234";
