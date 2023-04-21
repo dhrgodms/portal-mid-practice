@@ -13,16 +13,16 @@ public class UserDao {
     public User findById(Long id) throws ClassNotFoundException, SQLException {
 
         Connection connection=null;
-        PreparedStatement preparedStatement=null;
         ResultSet resultSet = null;
         User user = null;
+            PreparedStatement preparedStatement=null;
         // 여기에서 예외처리 해줌~
         try {
             connection = dataSource.getConnection();
 
+            StatementStrategy statementStrategy = new FindByIdStatementStrategy();
             //query
-            preparedStatement = connection.prepareStatement("select id, name, password from userinfo where id = ?");
-            preparedStatement.setLong(1, id);
+            preparedStatement = statementStrategy.makeStatement(id, connection);
 
             //실행
             resultSet = preparedStatement.executeQuery();
@@ -57,18 +57,15 @@ public class UserDao {
     }
 
 
-
-
     public void insert(User user) throws SQLException, ClassNotFoundException {
         Connection connection = null;
-        PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
+        PreparedStatement preparedStatement = null;
         try {
             connection = dataSource.getConnection();
 
-            preparedStatement = connection.prepareStatement("insert into userinfo (name, password) values (?,?)", Statement.RETURN_GENERATED_KEYS);
-            preparedStatement.setString(1,user.getName());
-            preparedStatement.setString(2,user.getPassword());
+            StatementStrategy statementStrategy = new InsertStatementStrategy();
+            preparedStatement = statementStrategy.makeStatement(user, connection);
             preparedStatement.executeUpdate();
 
             resultSet = preparedStatement.getGeneratedKeys();
@@ -93,17 +90,14 @@ public class UserDao {
         }
     }
 
+
     public void update(User user) throws SQLException, ClassNotFoundException {
         Connection connection = null;
-        PreparedStatement preparedStatement = null;
+            PreparedStatement preparedStatement = null;
         try {
             connection = dataSource.getConnection();
-
-            preparedStatement = connection.prepareStatement("update userinfo set name = ?, password = ? where id = ?");
-            preparedStatement.setString(1,user.getName());
-            preparedStatement.setString(2,user.getPassword());
-            preparedStatement.setLong(3, user.getId());
-
+            StatementStrategy statementStrategy = new UpdateStatementStrategy();
+            preparedStatement = statementStrategy.makeStatement(user, connection);
             preparedStatement.executeUpdate();
 
         } finally {
@@ -120,14 +114,15 @@ public class UserDao {
         }
     }
 
+
     public void delete(Long id) throws SQLException, ClassNotFoundException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
             connection = dataSource.getConnection();
 
-            preparedStatement = connection.prepareStatement("delete from userinfo where id = ?");
-            preparedStatement.setLong(1, id);
+        StatementStrategy statementStrategy = new DeleteStatementStrategy();
+        preparedStatement = statementStrategy.makeStatement(id, connection);
 
             preparedStatement.executeUpdate();
 
