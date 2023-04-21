@@ -72,6 +72,15 @@ public class UserDaoTests {
 
     @Test
     public void delete() throws SQLException, ClassNotFoundException {
+        User user = insertedUser();
+
+        userDao.delete(user.getId());
+
+        User deletedUser = userDao.findById(user.getId());
+        assertThat(deletedUser, IsNull.nullValue());
+    }
+
+    private static User insertedUser() throws SQLException, ClassNotFoundException {
         User user = new User();
 
         String name = "haeeun";
@@ -80,11 +89,7 @@ public class UserDaoTests {
         user.setPassword(password);
 
         userDao.insert(user);
-
-        userDao.delete(user.getId());
-
-        User deletedUser = userDao.findById(user.getId());
-        assertThat(deletedUser, IsNull.nullValue());
+        return user;
     }
 
 
