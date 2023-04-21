@@ -20,9 +20,9 @@ public class UserDao {
         try {
             connection = dataSource.getConnection();
 
-            StatementStrategy statementStrategy = new FindByIdStatementStrategy();
+            StatementStrategy statementStrategy = new FindByIdStatementStrategy(id);
             //query
-            preparedStatement = statementStrategy.makeStatement(id, connection);
+            preparedStatement = statementStrategy.makeStatement(connection);
 
             //실행
             resultSet = preparedStatement.executeQuery();
@@ -64,8 +64,8 @@ public class UserDao {
         try {
             connection = dataSource.getConnection();
 
-            StatementStrategy statementStrategy = new InsertStatementStrategy();
-            preparedStatement = statementStrategy.makeStatement(user, connection);
+            StatementStrategy statementStrategy = new InsertStatementStrategy(user);
+            preparedStatement = statementStrategy.makeStatement(connection);
             preparedStatement.executeUpdate();
 
             resultSet = preparedStatement.getGeneratedKeys();
@@ -96,8 +96,8 @@ public class UserDao {
             PreparedStatement preparedStatement = null;
         try {
             connection = dataSource.getConnection();
-            StatementStrategy statementStrategy = new UpdateStatementStrategy();
-            preparedStatement = statementStrategy.makeStatement(user, connection);
+            StatementStrategy statementStrategy = new UpdateStatementStrategy(user);
+            preparedStatement = statementStrategy.makeStatement(connection);
             preparedStatement.executeUpdate();
 
         } finally {
@@ -121,8 +121,8 @@ public class UserDao {
         try {
             connection = dataSource.getConnection();
 
-        StatementStrategy statementStrategy = new DeleteStatementStrategy();
-        preparedStatement = statementStrategy.makeStatement(id, connection);
+        StatementStrategy statementStrategy = new DeleteStatementStrategy(id);
+        preparedStatement = statementStrategy.makeStatement(connection);
 
             preparedStatement.executeUpdate();
 
