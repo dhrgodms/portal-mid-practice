@@ -85,5 +85,4 @@ public class UserDaoTests {
         return user;
     }
 
-
 }
